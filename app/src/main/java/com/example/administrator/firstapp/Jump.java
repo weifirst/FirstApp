@@ -38,6 +38,6 @@ public class Jump extends Activity {
                 //startActivity(intent);
             }
         };
-        timer.schedule(task,15000);
+        timer.schedule(task,5000);
     }
 }

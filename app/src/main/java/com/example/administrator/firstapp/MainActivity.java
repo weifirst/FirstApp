@@ -1,6 +1,7 @@
 package com.example.administrator.firstapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -28,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    private ContentView content;
+    ImageView imageView;
+    LinearLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +41,36 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+       // setContentView(R.layout.activity_main);
+       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
+
+        // 初始化一个显示各个点的viewGroup
+        content = new ContentView(this);
+        imageView = new ImageView(this);
+
+        imageView.setBackgroundResource(R.mipmap.ic_launcher);
+
+        content.addView(imageView);
+
+        content.setBackgroundColor(Color.GREEN);
+
+        setContentView(content);
+
+        /*content = new ContentView(this, "75342619",new GestureCallBack() {
+
+            @Override
+            public void checkedSuccess() {
+                Toast.makeText(MainActivity.this,"校验成功", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void checkedFail() {
+                Toast.makeText(MainActivity.this,"校验失败", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //设置手势解锁显示到哪个布局里面
+        content.setParentView(body_layout);*/
 
 
 
