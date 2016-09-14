@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private ContentView content;
     ImageView imageView;
     LinearLayout layout;
+    ContentView group;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,50 +44,25 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_main);
-       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
 
-        // 初始化一个显示各个点的viewGroup
-        content = new ContentView(this);
+        layout = new LinearLayout(this);
+        group  = new ContentView(this);
         imageView = new ImageView(this);
-
+        textView = new TextView(this);
         imageView.setBackgroundResource(R.mipmap.ic_launcher);
 
-        content.addView(imageView);
+        textView.setText("Hello");
 
-        content.setBackgroundColor(Color.GREEN);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setBackgroundColor(Color.BLUE);
+        layout.addView(imageView);
+        layout.addView(textView);
 
-        setContentView(content);
+        group.addView(layout);
+        group.setBackgroundColor(Color.GREEN);
 
-        /*content = new ContentView(this, "75342619",new GestureCallBack() {
+        setContentView(group);
 
-            @Override
-            public void checkedSuccess() {
-                Toast.makeText(MainActivity.this,"校验成功", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void checkedFail() {
-                Toast.makeText(MainActivity.this,"校验失败", Toast.LENGTH_SHORT).show();
-            }
-        });
-        //设置手势解锁显示到哪个布局里面
-        content.setParentView(body_layout);*/
-
-
-
-
-
-       /*悬浮按钮功能，暂且去掉，需要时再添加
-       FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();

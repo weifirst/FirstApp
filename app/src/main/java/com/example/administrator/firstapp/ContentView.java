@@ -42,4 +42,15 @@ public class ContentView  extends ViewGroup {
             v.layout(col*d+d/baseNum, row*d+d/baseNum, col*d+d-d/baseNum, row*d+d-d/baseNum);
         }*/
     }
+
+    @Override
+
+    protected
+    void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        for (int i = 0; i < getChildCount(); i++) {
+            View v = getChildAt(i);
+            v.measure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
 }
