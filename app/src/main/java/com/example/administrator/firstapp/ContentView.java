@@ -1,8 +1,10 @@
 package com.example.administrator.firstapp;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 
 public class ContentView  extends ViewGroup {
 
+    private Drawl drawl;
+    Context m_context;
     public ContentView(Context context/*, String passWord, GestureCallBack callBack*/) {
         super(context);
         /*screenDispaly = ScreenUtils.getScreenDispaly(context);
@@ -20,6 +24,8 @@ public class ContentView  extends ViewGroup {
         addChild();
         // 初始化一个可以画线的view
         drawl = new Drawl(context, list,passWord,callBack);*/
+        m_context = context;
+        drawl = new Drawl(context);
     }
 
     @Override
@@ -44,7 +50,6 @@ public class ContentView  extends ViewGroup {
     }
 
     @Override
-
     protected
     void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -52,5 +57,21 @@ public class ContentView  extends ViewGroup {
             View v = getChildAt(i);
             v.measure(widthMeasureSpec, heightMeasureSpec);
         }
+    }
+
+    public void setParentView(ViewGroup parent){
+        // 得到屏幕的宽度
+        //int width = screenDispaly[0];
+        WindowManager wm = (WindowManager)this.getContext().getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        int width  = dm.widthPixels ;
+        LayoutParams layoutParams = new LayoutParams(width, width);
+
+        this.setLayoutParams(layoutParams);
+        drawl.setLayoutParams(layoutParams);
+
+        parent.addView(drawl);
+        //parent.addView(this);
     }
 }

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,36 +33,26 @@ public class MainActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+
+    private FrameLayout body_layout;
     private ContentView content;
-    ImageView imageView;
-    LinearLayout layout;
-    ContentView group;
-    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final Intent intent = new Intent(this,Jump.class);
-        startActivity(intent);
+       // final Intent intent = new Intent(this,Jump.class);
+       // startActivity(intent);
 
         super.onCreate(savedInstanceState);
 
-        layout = new LinearLayout(this);
-        group  = new ContentView(this);
-        imageView = new ImageView(this);
-        textView = new TextView(this);
-        imageView.setBackgroundResource(R.mipmap.ic_launcher);
+        setContentView(R.layout.activity_main);
 
-        textView.setText("Hello");
+        body_layout = (FrameLayout) findViewById(R.id.body_layout);
 
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setBackgroundColor(Color.BLUE);
-        layout.addView(imageView);
-        layout.addView(textView);
+        // 初始化一个显示各个点的viewGroup
+        content = new ContentView(this);
 
-        group.addView(layout);
-        group.setBackgroundColor(Color.GREEN);
-
-        setContentView(group);
+        //设置手势解锁显示到哪个布局里面
+        content.setParentView(body_layout);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
