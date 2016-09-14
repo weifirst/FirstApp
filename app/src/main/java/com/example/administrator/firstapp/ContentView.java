@@ -20,6 +20,7 @@ public class ContentView  extends ViewGroup {
         addChild();
         // 初始化一个可以画线的view
         drawl = new Drawl(context, list,passWord,callBack);*/
+
     }
 
     @Override
