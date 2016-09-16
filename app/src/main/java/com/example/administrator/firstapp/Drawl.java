@@ -47,6 +47,8 @@ public class Drawl extends View {
         //paint.setColor(Color.rgb(4, 115, 157));// 设置颜色
         paint.setColor(Color.rgb(255, 0, 0));// 设置颜色
         paint.setAntiAlias(true);// 不显示锯齿
+
+        DrawNineCircle();
     }
 
     // 画位图
@@ -56,7 +58,7 @@ public class Drawl extends View {
         canvas.drawBitmap(bitmap, 0, 0, null);
 
         // 创建画笔
-        Paint p = new Paint();
+       /* Paint p = new Paint();
         p.setColor(Color.WHITE);// 设置红色
         p.setStyle(Paint.Style.STROKE);                   //空心效果
         p.setAntiAlias(true);                       //设置画笔为无锯齿
@@ -71,7 +73,7 @@ public class Drawl extends View {
                 m_nPos[i][j].y = y;
                 canvas.drawCircle(x, y, m_nRadius, p);
             }
-        }
+        }*/
     }
 
     // 触摸事件
@@ -101,6 +103,8 @@ public class Drawl extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                DrawNineCircle();
+
                 PointF pt = InPoint(event.getX(),event.getY());
                 if( pt.x!=0 ){
                     m_ptList.add( pt );
@@ -166,6 +170,7 @@ public class Drawl extends View {
                 break;
             case MotionEvent.ACTION_UP:// 当手指抬起的时候
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                DrawNineCircle();
                 invalidate();
                     /*     // 清掉屏幕上所有的线，只画上集合里面保存的线
                 if(passWord.equals(passWordSb.toString())){
@@ -236,8 +241,27 @@ public class Drawl extends View {
         return true;
     }
 
+    public void DrawNineCircle()
+    {
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);// 设置红色
+        p.setStyle(Paint.Style.STROKE);                   //空心效果
+        p.setAntiAlias(true);                       //设置画笔为无锯齿
+        p.setStrokeWidth((float) 3.0);              //线宽
+
+        int nWidth = CScreenSize.GetWidth();
+        for( int i=0; i<3; i++ ){
+            for( int j=0; j<3; j++ ) {
+                float x = (float)((j*2+1)*(nWidth/6.0));
+                float y = (float)((i*2+1)*(nWidth/6.0));
+                m_nPos[i][j].x = x;
+                m_nPos[i][j].y = y;
+                canvas.drawCircle(x, y, m_nRadius, p);
+            }
+        }
+    }
     //写数据
-    public void writeFile(String fileName,String writestr) throws IOException{
+   /* public void writeFile(String fileName,String writestr) throws IOException{
         try{
             FileOutputStream fout =Context.openFileOutput(fileName, Context.MODE_PRIVATE);
             byte[] bytes = writestr.getBytes();
@@ -247,10 +271,10 @@ public class Drawl extends View {
         catch(Exception e){
             e.printStackTrace();
         }
-    }
+    }*/
 
     //读数据
-    public String readFile(String fileName) throws IOException {
+    /*public String readFile(String fileName) throws IOException {
         String res="";
         try{
             FileInputStream fin = openFileInput(fileName);
@@ -264,6 +288,6 @@ public class Drawl extends View {
             e.printStackTrace();
         }
         return res;
-    }
+    }*/
 
 }
