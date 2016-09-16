@@ -6,11 +6,19 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.PorterDuff;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Drawl extends View {
     private int mov_x;// 声明起点坐标
@@ -18,12 +26,19 @@ public class Drawl extends View {
     private Paint paint;// 声明画笔
     private Canvas canvas;// 画布
     private Bitmap bitmap;// 位图
+    private int m_nRadius = 60;
+    private PointF m_ptFirst = new PointF(0,0);
+    PointF m_nPos[][] = {{new PointF(0,0), new PointF(0,0), new PointF(0,0)},
+                         {new PointF(0,0), new PointF(0,0), new PointF(0,0)},
+                         {new PointF(0,0), new PointF(0,0), new PointF(0,0)}};
+    ArrayList<PointF> m_ptList = new ArrayList<PointF>();
+
 
     public Drawl(Context context) {
         super(context);
 
         paint = new Paint(Paint.DITHER_FLAG);// 创建一个画笔
-        bitmap = Bitmap.createBitmap(480, 854, Bitmap.Config.ARGB_8888); // 设置位图的宽高
+        bitmap = Bitmap.createBitmap(CScreenSize.GetWidth(), CScreenSize.GetWidth(), Bitmap.Config.ARGB_8888); // 设置位图的宽高
         canvas = new Canvas();
         canvas.setBitmap(bitmap);
 
@@ -39,6 +54,24 @@ public class Drawl extends View {
     protected void onDraw(Canvas canvas) {
         // super.onDraw(canvas);
         canvas.drawBitmap(bitmap, 0, 0, null);
+
+        // 创建画笔
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);// 设置红色
+        p.setStyle(Paint.Style.STROKE);                   //空心效果
+        p.setAntiAlias(true);                       //设置画笔为无锯齿
+        p.setStrokeWidth((float) 3.0);              //线宽
+
+        int nWidth = CScreenSize.GetWidth();
+        for( int i=0; i<3; i++ ){
+            for( int j=0; j<3; j++ ) {
+                float x = (float)((j*2+1)*(nWidth/6.0));
+                float y = (float)((i*2+1)*(nWidth/6.0));
+                m_nPos[i][j].x = x;
+                m_nPos[i][j].y = y;
+                canvas.drawCircle(x, y, m_nRadius, p);
+            }
+        }
     }
 
     // 触摸事件
@@ -47,10 +80,15 @@ public class Drawl extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
-                mov_x = (int) event.getX();
-                mov_y = (int) event.getY();
-                canvas.drawLine(0,0, event.getX(), event.getY(),paint);// 画线
-                invalidate();
+                //mov_x = event.getX();
+                //mov_y = (int) event.getY();
+               // canvas.drawLine(0,0, event.getX(), event.getY(),paint);// 画线
+               // invalidate();
+                m_ptFirst = InPoint(event.getX(),event.getY());
+                m_ptList.clear();
+                if( m_ptFirst.x!=0 ){
+                    m_ptList.add( m_ptFirst );
+                }
 
  /*               // 判断当前点击的位置是处于哪个点之内
                 currentPoint = getPointAt(mov_x, mov_y);
@@ -62,6 +100,23 @@ public class Drawl extends View {
                 invalidate();*/
                 break;
             case MotionEvent.ACTION_MOVE:
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                PointF pt = InPoint(event.getX(),event.getY());
+                if( pt.x!=0 ){
+                    m_ptList.add( pt );
+                }
+                if( !m_ptList.isEmpty() ) {
+                    int nPointCount = m_ptList.size();
+                    for( int i=0; i<nPointCount; i++ ){
+                        if( i==nPointCount-1 ){
+                            canvas.drawLine(m_ptList.get(i).x, m_ptList.get(i).y, event.getX(), event.getY(), paint);
+                        }
+                        else {
+                            canvas.drawLine(m_ptList.get(i).x, m_ptList.get(i).y, m_ptList.get(i+1).x, m_ptList.get(i+1).y, paint);// 画线
+                        }
+                    }
+                }
+                invalidate();
          /*       clearScreenAndDrawList();
 
                 // 得到当前移动位置是处于哪个点内
@@ -110,7 +165,9 @@ public class Drawl extends View {
                 invalidate();*/
                 break;
             case MotionEvent.ACTION_UP:// 当手指抬起的时候
-           /*     // 清掉屏幕上所有的线，只画上集合里面保存的线
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                invalidate();
+                    /*     // 清掉屏幕上所有的线，只画上集合里面保存的线
                 if(passWord.equals(passWordSb.toString())){
                     //代表用户绘制的密码手势与传入的密码相同
                     callBack.checkedSuccess();
@@ -134,4 +191,79 @@ public class Drawl extends View {
         }
         return true;
     }
+
+    private  PointF InPoint(float x, float y)
+    {
+        PointF pt = new PointF(0,0);
+        for( int i=0; i<3; i++){
+            for( int j=0; j<3; j++ ){
+                float f = (float) Math.sqrt((m_nPos[i][j].x-x)*(m_nPos[i][j].x-x)+(m_nPos[i][j].y-y)*(m_nPos[i][j].y-y));
+                if( f<m_nRadius ){
+                    return m_nPos[i][j];
+                }
+            }
+        }
+        return pt;
+    }
+
+    //读取配置文件
+    public Properties loadConfig(Context context, String file) {
+        Properties properties = new Properties();
+        try {
+            FileInputStream s = new FileInputStream(file);
+            properties.load(s);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return properties;
+    }
+
+    //保存配置文件
+    public boolean saveConfig(Context context, String file, Properties properties) {
+        try {
+            File fil=new File(file);
+            if(!fil.exists())
+                fil.createNewFile();
+            FileOutputStream s = new FileOutputStream(fil);
+            properties.store(s, "");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    //写数据
+    public void writeFile(String fileName,String writestr) throws IOException{
+        try{
+            FileOutputStream fout =Context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            byte[] bytes = writestr.getBytes();
+            fout.write(bytes);
+            fout.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    //读数据
+    public String readFile(String fileName) throws IOException {
+        String res="";
+        try{
+            FileInputStream fin = openFileInput(fileName);
+            int length = fin.available();
+            byte [] buffer = new byte[length];
+            fin.read(buffer);
+            res = EncodingUtils.getString(buffer, "UTF-8");
+            fin.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
+
 }

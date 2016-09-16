@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        CScreenSize.Init(this);
+
         body_layout = (FrameLayout) findViewById(R.id.body_layout);
 
         // 初始化一个显示各个点的viewGroup
