@@ -11,11 +11,13 @@ import java.util.ArrayList;
 // Created by wzg on 2016/9/13.
 
 public class ContentView  extends ViewGroup {
-
+   // private int[] nScreenSize;
     private Drawl drawl;
     Context m_context;
     public ContentView(Context context/*, String passWord, GestureCallBack callBack*/) {
         super(context);
+
+       // nScreenSize = CScreenSize.getScreenSize(context);
         /*screenDispaly = ScreenUtils.getScreenDispaly(context);
         d = screenDispaly[0]/3;
         this.list = new ArrayList<Point>();
@@ -60,18 +62,12 @@ public class ContentView  extends ViewGroup {
     }
 
     public void setParentView(ViewGroup parent){
-        // 得到屏幕的宽度
-        //int width = screenDispaly[0];
-        WindowManager wm = (WindowManager)this.getContext().getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(dm);
-        int width  = dm.widthPixels ;
+        int width  = CScreenSize.GetWidth();
         LayoutParams layoutParams = new LayoutParams(width, width);
 
         this.setLayoutParams(layoutParams);
         drawl.setLayoutParams(layoutParams);
 
         parent.addView(drawl);
-        //parent.addView(this);
     }
 }
