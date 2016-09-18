@@ -225,13 +225,18 @@ public class Drawl extends View {
                 canvas.drawLine(m_ptList.get(i).x, m_ptList.get(i).y, m_ptList.get(i+1).x, m_ptList.get(i+1).y, paint);// 画线
                 //画线上的箭头
                 //确定箭头顶部的坐标
-                PointF pt = this.GetArrowDot(m_ptList.get(i).x, m_ptList.get(i).y, 40, m_ptList.get(i+1).x, m_ptList.get(i+1).y);
-                pt = this.GetArrowDot(m_ptList.get(i).x, m_ptList.get(i).y, 40, m_ptList.get(i+1).x, m_ptList.get(i+1).y);
+                PointF pt = GetCircleLineCrosspoint(m_ptList.get(i).x, m_ptList.get(i).y, 40, m_ptList.get(i+1).x, m_ptList.get(i+1).y);
+                PointF ptNear = GetCircleLineCrosspoint(m_ptList.get(i).x, m_ptList.get(i).y, 35, m_ptList.get(i+1).x, m_ptList.get(i+1).y);
+
+                PointF pt1 = new PointF(0,0);
+                PointF pt2 = new PointF(0,0);
+                GetTrianglePoint(0, 0, 0, 0, 0, 0, pt1, pt2);
+                GetTrianglePoint(0, 0, 0, 0, 0, 0, pt1, pt2);
             }
         }
     }
 
-    private PointF GetArrowDot(float x1, float y1, int nLen, float x2, float y2)
+    private PointF GetCircleLineCrosspoint(float x1, float y1, int nLen, float x2, float y2)
     {
         PointF pt = new PointF();
 /*
@@ -294,6 +299,14 @@ public class Drawl extends View {
         pt.x = (float)fx;
         pt.y = (float)fy;
         return pt;
+    }
+
+    private void GetTrianglePoint(float x1, float y1, int nLen, float x2, float y2, int nVerticalLineLen, PointF pt1, PointF pt2)
+    {
+        pt1.x = 1;
+        pt1.y = 2;
+        pt2.x = 3;
+        pt2.y = 4;
     }
 
     //读取配置文件
