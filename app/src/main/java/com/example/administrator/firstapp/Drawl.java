@@ -31,7 +31,7 @@ public class Drawl extends View {
     PointF m_nPos[][] = {{new PointF(0,0), new PointF(0,0), new PointF(0,0)},
                          {new PointF(0,0), new PointF(0,0), new PointF(0,0)},
                          {new PointF(0,0), new PointF(0,0), new PointF(0,0)}};
-    ArrayList<PointF> m_ptList = new ArrayList<PointF>();
+    ArrayList<PointF> m_ptList = new ArrayList<>();
 
 
     public Drawl(Context context) {
@@ -265,26 +265,6 @@ public class Drawl extends View {
         //         (h1*h1+1)fx*fx + (2*h1*i1-2*x1-2*y1*h1)*fx = c1-y1*y1-x1*x1-i1*i1+2*y1*i1;
         //         (h1*h1+1)fx*fx + (2*h1*i1-2*x1-2*y1*h1)*fx -c1+y1*y1+x1*x1+i1*i1-2*y1*i1 = 0;
 
-        double d1 = -2*x1;
-        double e1 = x1*x1;
-        double f1 = -2*y1;
-        //由(1)得： fx*fx+d1*fx+e1 + fy*fy-2*y1*fy+y1*y1 = c1;
-        //由(1)得： fx*fx+d1*fx + fy*fy+f1*fy = c1-y1*y1-e1;
-        double g1 = c1-y1*y1-e1;
-
-        //由(1)得： fx*fx+d1*fx + fy*fy+f1*fy = g1;
-
-        //(2) (fy-y1)/b1 = (fx-x1)/a1
-        //由(2)得： fy = (fx-x1)*b1/a1
-
-
-        //(2)         fy = h1*fx+i1
-
-        //将（2）代入（1）得：
-        //fx*fx+d1*fx + (h1*fx+i1)*(h1*fx+i1)+f1*(h1*fx+i1) = g1;
-        //fx*fx+d1*fx + (h1*h1*fx*fx+i1*i1+2*h1*fx)+f1*(h1*fx+i1) = g1;
-        //fx*fx+d1*fx + h1*h1*fx*fx + i1*i1 + 2*h1*fx+f1*h1*fx + f1*i1 = g1;
-        //(h1*h1+1)fx*fx + d1*fx +2*h1*fx+f1*h1*fx = g1-i1*i1-f1*i1;
         double a = h1*h1+1;
         double b = 2*h1*i1-2*x1-2*y1*h1;
         double c = -c1+y1*y1+x1*x1+i1*i1-2*y1*i1;
@@ -311,53 +291,10 @@ public class Drawl extends View {
 
         double fy = h1*fx+i1;
 
-
-
-        //简化为：fy = (fx-x1)/a1*b1;
-        //       fy = (b1/a1)*fx-(b1/a1)*x1;
-      //  float c1 = b1/a1;
-      //  float d1 = c1*x1;
-        //简化为：fy = c1*fx-d1;
-        //代入(1):  (fx-x1)*(fx-x1)+(c1*fx-d1-y1)*(c1*fx-d1-y1) = nLen*nLen;
-      //  float e1 = d1+y1;
-      //  double f1 = -nLen*nLen;
-      //  double a = c1*c1+1;
-      //  double b =
-        //简化为：  (fx-x1)*(fx-x1)+(c1*fx-e1)*(c1*fx-e1) = nLen*nLen;
-        //整理得:   fx*fx-2*x1*fx+x1*x1+(c1*c1*fx*fx-2*c1*e1*fx+e1*e1) = nLen*nLen;
-        //         (c1*c1+1)*fx*fx -2*(x1+c1*e1)+x1*x1+e1*e1 -nLen*nLen = 0;
-        //         (c1*c1+1)*fx*fx -2*(x1+c1*e1)+x1*x1+e1*e1 +f1 = 0;
-        //          a*fx*fx
-
-        //+(y-y1)*(y-y1) = nLen*nLen-(x-x1)*(x-x1);
-
-        //y = (x-x1)/(x2-x1)*(y2-y1)+y1;
-      //  float fx=(float) 0.1;
-      //  float fy;
-      //  fy = (fx-x1)/(x2-x1)*(y2-y1)+y1;
-      //  fy = (float) Math.sqrt((float)(nLen*nLen-(fx-x1)*(fx-x1)));
-       // (fx-x1)/(x2-x1)*(y2-y1)+y1 = (float) Math.sqrt((float)(nLen*nLen-(fx-x1)*(fx-x1)));
-       // ((fx-x1)/(x2-x1)*(y2-y1)+y1)*((fx-x1)/(x2-x1)*(y2-y1)+y1) = (nLen*nLen-(fx-x1)*(fx-x1));
-       // float a = fx-x1;
-        //(a/(x2-x1)*(y2-y1)+y1)*(a/(x2-x1)*(y2-y1)+y1) = (nLen*nLen-a*a);
-      //  a*a
-        //(x-x1)*(x-x1)+ = nLen*nLen-((x-x1)/(x2-x1)*(y2-y1))*((x-x1)/(x2-x1)*(y2-y1));
-        //float fx = Math.sqrt(nLen*nLen-((x-x1)/(x2-x1)*(y2-y1))*((x-x1)/(x2-x1)*(y2-y1)))+x1;
         pt.x = (float)fx;
         pt.y = (float)fy;
         return pt;
     }
-
-   /* private boolean IsExit(PointF pt) {
-        int nPointCount = m_ptList.size();
-        for (int i = 0; i < nPointCount; i++) {
-            if (m_ptList.get(i).x == pt.x && m_ptList.get(i).y == pt.y) {
-                return true;
-            }
-        }
-
-        return false;
-    }*/
 
     //读取配置文件
     public Properties loadConfig(Context context, String file) {
@@ -371,22 +308,6 @@ public class Drawl extends View {
             return null;
         }
         return properties;
-    }
-
-    //保存配置文件
-    public boolean saveConfig(Context context, String file, Properties properties) {
-        try {
-            File fil=new File(file);
-            if(!fil.exists())
-                fil.createNewFile();
-            FileOutputStream s = new FileOutputStream(fil);
-            properties.store(s, "");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
     public void DrawNineCircle()
