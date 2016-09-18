@@ -43,11 +43,12 @@ public class Drawl extends View {
         canvas.setBitmap(bitmap);
 
         paint.setStyle(Paint.Style.STROKE);// 设置非填充
-        paint.setStrokeWidth(10);// 笔宽5像素
+        paint.setStrokeWidth(2);// 笔宽5像素
         //paint.setColor(Color.rgb(4, 115, 157));// 设置颜色
-        paint.setColor(Color.rgb(255, 0, 0));// 设置颜色
+        paint.setColor(Color.rgb(0, 170, 255));// 设置颜色
         paint.setAntiAlias(true);// 不显示锯齿
 
+        paint.setStyle(Paint.Style.FILL);// 设置非填充
         DrawNineCircle();
     }
 
@@ -107,18 +108,13 @@ public class Drawl extends View {
 
                 PointF pt = InPoint(event.getX(),event.getY());
                 if( pt.x!=0 ){
-                    m_ptList.add( pt );
+                    int nCount = m_ptList.size();
+                    if( nCount==0 || nCount>0 && (m_ptList.get(nCount-1).x!=pt.x || m_ptList.get(nCount-1).y!=pt.y)  ) {
+                        m_ptList.add(pt);
+                    }
                 }
                 if( !m_ptList.isEmpty() ) {
-                    int nPointCount = m_ptList.size();
-                    for( int i=0; i<nPointCount; i++ ){
-                        if( i==nPointCount-1 ){
-                            canvas.drawLine(m_ptList.get(i).x, m_ptList.get(i).y, event.getX(), event.getY(), paint);
-                        }
-                        else {
-                            canvas.drawLine(m_ptList.get(i).x, m_ptList.get(i).y, m_ptList.get(i+1).x, m_ptList.get(i+1).y, paint);// 画线
-                        }
-                    }
+                    DrawDotAndLine(event.getX(), event.getY());
                 }
                 invalidate();
          /*       clearScreenAndDrawList();
@@ -211,6 +207,158 @@ public class Drawl extends View {
         return pt;
     }
 
+    private void DrawDotAndLine(float x, float y)
+    {
+        int nPointCount = m_ptList.size();
+        for( int i=0; i<nPointCount; i++ ){
+            paint.setStyle(Paint.Style.FILL);// 设置填充
+            canvas.drawCircle(m_ptList.get(i).x, m_ptList.get(i).y, 16, paint);
+
+            paint.setStyle(Paint.Style.STROKE);// 设置非填充
+            canvas.drawCircle(m_ptList.get(i).x, m_ptList.get(i).y, m_nRadius, paint);
+
+            //canvas.draw
+            if( i==nPointCount-1 ){
+                canvas.drawLine(m_ptList.get(i).x, m_ptList.get(i).y, x, y, paint);
+            }
+            else {
+                canvas.drawLine(m_ptList.get(i).x, m_ptList.get(i).y, m_ptList.get(i+1).x, m_ptList.get(i+1).y, paint);// 画线
+                //画线上的箭头
+                //确定箭头顶部的坐标
+                PointF pt = this.GetArrowDot(m_ptList.get(i).x, m_ptList.get(i).y, 40, m_ptList.get(i+1).x, m_ptList.get(i+1).y);
+                pt = this.GetArrowDot(m_ptList.get(i).x, m_ptList.get(i).y, 40, m_ptList.get(i+1).x, m_ptList.get(i+1).y);
+            }
+        }
+    }
+
+    private PointF GetArrowDot(float x1, float y1, int nLen, float x2, float y2)
+    {
+        PointF pt = new PointF();
+/*
+         x1=[-b+根号下（b^2-4ac)]/2a
+          x2=[-b-根号下（b^2-4ac)]/2a*/
+        //(1) (fx-x1)*(fx-x1)+(fy-y1)*(fy-y1) = nLen*nLen;
+        //(2) (fy-y1)/(y2-y1) = (fx-x1)/(x2-x1)
+        //      fy-y1 = (fx-x1)*(y2-y1)/(x2-x1)
+        //      fy = (fx-x1)*(y2-y1)/(x2-x1)+y1;
+        //      fy = (fx-x1)*(b1)/(a1)+y1;
+        //      fy = (fx*b1-x1*b1)/(a1)+y1;
+        //      fy = fx*b1/a1-x1*b1/a1+y1;
+
+        double a1 = x2-x1;
+        double b1 = y2-y1;
+        double h1 = b1/a1;
+        //      fy = fx*h1-x1*h1+y1;
+        double i1 = -x1*h1+y1;
+        //最终(2)   fy = h1*fx+i1;
+
+        int c1 = nLen*nLen;
+        //由(1)得： fx*fx-2*x1*fx+x1*x1 + fy*fy-2*y1*fy+y1*y1 = c1;
+        //         fx*fx-2*x1*fx+x1*x1 + (h1*fx+i1)*(h1*fx+i1)-2*y1*(h1*fx+i1) = c1-y1*y1;
+        //         fx*fx-2*x1*fx + (h1*fx+i1)*(h1*fx+i1)-2*y1*(h1*fx+i1) = c1-y1*y1-x1*x1;
+        //         fx*fx-2*x1*fx + (h1*h1*fx*fx+2*h1*i1*fx+i1*i1)-2*y1*(h1*fx+i1) = c1-y1*y1-x1*x1;
+        //         fx*fx-2*x1*fx + (h1*h1*fx*fx+2*h1*i1*fx+i1*i1)-2*y1*h1*fx-2*y1*i1 = c1-y1*y1-x1*x1;
+        //         fx*fx-2*x1*fx + h1*h1*fx*fx+2*h1*i1*fx+i1*i1-2*y1*h1*fx-2*y1*i1 = c1-y1*y1-x1*x1;
+        //         (h1*h1+1)fx*fx-2*x1*fx + 2*h1*i1*fx+i1*i1-2*y1*h1*fx-2*y1*i1 = c1-y1*y1-x1*x1;
+        //         (h1*h1+1)fx*fx-2*x1*fx + 2*h1*i1*fx-2*y1*h1*fx-2*y1*i1 = c1-y1*y1-x1*x1-i1*i1;
+        //         (h1*h1+1)fx*fx-2*x1*fx + 2*h1*i1*fx-2*y1*h1*fx = c1-y1*y1-x1*x1-i1*i1+2*y1*i1;
+        //         (h1*h1+1)fx*fx + (2*h1*i1-2*x1-2*y1*h1)*fx = c1-y1*y1-x1*x1-i1*i1+2*y1*i1;
+        //         (h1*h1+1)fx*fx + (2*h1*i1-2*x1-2*y1*h1)*fx -c1+y1*y1+x1*x1+i1*i1-2*y1*i1 = 0;
+
+        double d1 = -2*x1;
+        double e1 = x1*x1;
+        double f1 = -2*y1;
+        //由(1)得： fx*fx+d1*fx+e1 + fy*fy-2*y1*fy+y1*y1 = c1;
+        //由(1)得： fx*fx+d1*fx + fy*fy+f1*fy = c1-y1*y1-e1;
+        double g1 = c1-y1*y1-e1;
+
+        //由(1)得： fx*fx+d1*fx + fy*fy+f1*fy = g1;
+
+        //(2) (fy-y1)/b1 = (fx-x1)/a1
+        //由(2)得： fy = (fx-x1)*b1/a1
+
+
+        //(2)         fy = h1*fx+i1
+
+        //将（2）代入（1）得：
+        //fx*fx+d1*fx + (h1*fx+i1)*(h1*fx+i1)+f1*(h1*fx+i1) = g1;
+        //fx*fx+d1*fx + (h1*h1*fx*fx+i1*i1+2*h1*fx)+f1*(h1*fx+i1) = g1;
+        //fx*fx+d1*fx + h1*h1*fx*fx + i1*i1 + 2*h1*fx+f1*h1*fx + f1*i1 = g1;
+        //(h1*h1+1)fx*fx + d1*fx +2*h1*fx+f1*h1*fx = g1-i1*i1-f1*i1;
+        double a = h1*h1+1;
+        double b = 2*h1*i1-2*x1-2*y1*h1;
+        double c = -c1+y1*y1+x1*x1+i1*i1-2*y1*i1;
+        //j1*fx*fx + k1*fx + k1 = 0;
+        double a0 = b*b-4*a*c;
+        double aaa = Math.sqrt(b*b-4*a*c);
+        double bbb = -b+aaa;
+        double ccc = bbb/(2*a);
+        double fx =(-b+Math.sqrt(b*b-4*a*c))/(2*a);
+
+        float fBig;
+        float fSmall;
+        if( x2>x1 ){
+            fBig = x2;
+            fSmall = x1;
+        }
+        else{
+            fBig = x1;
+            fSmall = x2;
+        }
+        if( fx<=fSmall || fx>=fBig ){
+            fx =(-b-Math.sqrt(b*b-4*a*c))/2*a;
+        }
+
+        double fy = h1*fx+i1;
+
+
+
+        //简化为：fy = (fx-x1)/a1*b1;
+        //       fy = (b1/a1)*fx-(b1/a1)*x1;
+      //  float c1 = b1/a1;
+      //  float d1 = c1*x1;
+        //简化为：fy = c1*fx-d1;
+        //代入(1):  (fx-x1)*(fx-x1)+(c1*fx-d1-y1)*(c1*fx-d1-y1) = nLen*nLen;
+      //  float e1 = d1+y1;
+      //  double f1 = -nLen*nLen;
+      //  double a = c1*c1+1;
+      //  double b =
+        //简化为：  (fx-x1)*(fx-x1)+(c1*fx-e1)*(c1*fx-e1) = nLen*nLen;
+        //整理得:   fx*fx-2*x1*fx+x1*x1+(c1*c1*fx*fx-2*c1*e1*fx+e1*e1) = nLen*nLen;
+        //         (c1*c1+1)*fx*fx -2*(x1+c1*e1)+x1*x1+e1*e1 -nLen*nLen = 0;
+        //         (c1*c1+1)*fx*fx -2*(x1+c1*e1)+x1*x1+e1*e1 +f1 = 0;
+        //          a*fx*fx
+
+        //+(y-y1)*(y-y1) = nLen*nLen-(x-x1)*(x-x1);
+
+        //y = (x-x1)/(x2-x1)*(y2-y1)+y1;
+      //  float fx=(float) 0.1;
+      //  float fy;
+      //  fy = (fx-x1)/(x2-x1)*(y2-y1)+y1;
+      //  fy = (float) Math.sqrt((float)(nLen*nLen-(fx-x1)*(fx-x1)));
+       // (fx-x1)/(x2-x1)*(y2-y1)+y1 = (float) Math.sqrt((float)(nLen*nLen-(fx-x1)*(fx-x1)));
+       // ((fx-x1)/(x2-x1)*(y2-y1)+y1)*((fx-x1)/(x2-x1)*(y2-y1)+y1) = (nLen*nLen-(fx-x1)*(fx-x1));
+       // float a = fx-x1;
+        //(a/(x2-x1)*(y2-y1)+y1)*(a/(x2-x1)*(y2-y1)+y1) = (nLen*nLen-a*a);
+      //  a*a
+        //(x-x1)*(x-x1)+ = nLen*nLen-((x-x1)/(x2-x1)*(y2-y1))*((x-x1)/(x2-x1)*(y2-y1));
+        //float fx = Math.sqrt(nLen*nLen-((x-x1)/(x2-x1)*(y2-y1))*((x-x1)/(x2-x1)*(y2-y1)))+x1;
+        pt.x = (float)fx;
+        pt.y = (float)fy;
+        return pt;
+    }
+
+   /* private boolean IsExit(PointF pt) {
+        int nPointCount = m_ptList.size();
+        for (int i = 0; i < nPointCount; i++) {
+            if (m_ptList.get(i).x == pt.x && m_ptList.get(i).y == pt.y) {
+                return true;
+            }
+        }
+
+        return false;
+    }*/
+
     //读取配置文件
     public Properties loadConfig(Context context, String file) {
         Properties properties = new Properties();
@@ -247,7 +395,7 @@ public class Drawl extends View {
         p.setColor(Color.WHITE);// 设置红色
         p.setStyle(Paint.Style.STROKE);                   //空心效果
         p.setAntiAlias(true);                       //设置画笔为无锯齿
-        p.setStrokeWidth((float) 3.0);              //线宽
+        p.setStrokeWidth((float) 2.0);              //线宽
 
         int nWidth = CScreenSize.GetWidth();
         for( int i=0; i<3; i++ ){
