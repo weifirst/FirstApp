@@ -304,7 +304,7 @@ public class Drawl extends View {
             fSmall = x2;
         }
         if( x<=fSmall || x>=fBig ){
-            x =(-b-Math.sqrt(b*b-4*a*c))/2*a;
+            x =(-b-Math.sqrt(b*b-4*a*c))/(2*a);
         }
 
         pt.x = (float)x;
