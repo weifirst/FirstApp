@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
@@ -225,39 +226,56 @@ public class Drawl extends View {
                 canvas.drawLine(m_ptList.get(i).x, m_ptList.get(i).y, m_ptList.get(i+1).x, m_ptList.get(i+1).y, paint);// 画线
                 //画线上的箭头
                 //确定箭头顶部的坐标
-                PointF pt = GetCircleLineCrosspoint(m_ptList.get(i).x, m_ptList.get(i).y, 40, m_ptList.get(i+1).x, m_ptList.get(i+1).y);
-                PointF ptNear = GetCircleLineCrosspoint(m_ptList.get(i).x, m_ptList.get(i).y, 35, m_ptList.get(i+1).x, m_ptList.get(i+1).y);
+                PointF ptTop = GetCircleLineCrosspoint(m_ptList.get(i).x, m_ptList.get(i).y, m_ptList.get(i+1).x, m_ptList.get(i+1).y, 50);
 
-                PointF pt1 = new PointF(0,0);
-                PointF pt2 = new PointF(0,0);
-                GetTrianglePoint(0, 0, 0, 0, 0, 0, pt1, pt2);
-                GetTrianglePoint(0, 0, 0, 0, 0, 0, pt1, pt2);
+                PointF ptLeft = new PointF(0,0);
+                PointF ptRight = new PointF(0,0);
+                GetTrianglePoint(m_ptList.get(i).x, m_ptList.get(i).y, m_ptList.get(i+1).x, m_ptList.get(i+1).y, 30, 10, ptLeft, ptRight);
+
+                Path path = new Path();
+                path.moveTo(ptTop.x, ptTop.y);
+                path.lineTo(ptLeft.x, ptLeft.y);
+                path.lineTo(ptRight.x, ptRight.y);
+                path.close();
+                paint.setStyle(Paint.Style.FILL);
+                canvas.drawPath(path, paint);
             }
         }
     }
 
-    private PointF GetCircleLineCrosspoint(float x1, float y1, int nLen, float x2, float y2)
+    private PointF GetCircleLineCrosspoint(float x1, float y1, float x2, float y2, int nLen)
     {
         PointF pt = new PointF();
-/*
-         x1=[-b+根号下（b^2-4ac)]/2a
+        if( x1==x2 ){
+            pt.x = x1;
+            pt.y = y1+(y2>y1?nLen:-nLen);
+            return pt;
+        }
+
+        if( y1==y2 ){
+            pt.x = x1+(x2>x1?nLen:-nLen);
+            pt.y = y1;
+            return pt;
+        }
+         /*x1=[-b+根号下（b^2-4ac)]/2a
           x2=[-b-根号下（b^2-4ac)]/2a*/
         //(1) (fx-x1)*(fx-x1)+(fy-y1)*(fy-y1) = nLen*nLen;
-        //(2) (fy-y1)/(y2-y1) = (fx-x1)/(x2-x1)
-        //      fy-y1 = (fx-x1)*(y2-y1)/(x2-x1)
-        //      fy = (fx-x1)*(y2-y1)/(x2-x1)+y1;
-        //      fy = (fx-x1)*(b1)/(a1)+y1;
-        //      fy = (fx*b1-x1*b1)/(a1)+y1;
-        //      fy = fx*b1/a1-x1*b1/a1+y1;
+        //(2) (y-y1)/(y2-y1) = (fx-x1)/(x2-x1)
+        //      y-y1 = (fx-x1)*(y2-y1)/(x2-x1)
+        //      y = (fx-x1)*(y2-y1)/(x2-x1)+y1;
+        //      y = (fx-x1)*(b1)/(a1)+y1;
+        //      y = (fx*b1-x1*b1)/(a1)+y1;
+        //      y = fx*b1/a1-x1*b1/a1+y1;
 
-        double a1 = x2-x1;
-        double b1 = y2-y1;
-        double h1 = b1/a1;
-        //      fy = fx*h1-x1*h1+y1;
-        double i1 = -x1*h1+y1;
-        //最终(2)   fy = h1*fx+i1;
+        double K = 0;
+        if( x1!=x2 ) {
+            K = (y2 - y1) / (x2 - x1);
+        }
+        //      y = K*x-x1*K+y1;
+        double B = -x1*K+y1;
+        //最终(2)   y = K*x+B;
 
-        int c1 = nLen*nLen;
+        //int c1 = nLen*nLen;
         //由(1)得： fx*fx-2*x1*fx+x1*x1 + fy*fy-2*y1*fy+y1*y1 = c1;
         //         fx*fx-2*x1*fx+x1*x1 + (h1*fx+i1)*(h1*fx+i1)-2*y1*(h1*fx+i1) = c1-y1*y1;
         //         fx*fx-2*x1*fx + (h1*fx+i1)*(h1*fx+i1)-2*y1*(h1*fx+i1) = c1-y1*y1-x1*x1;
@@ -270,15 +288,10 @@ public class Drawl extends View {
         //         (h1*h1+1)fx*fx + (2*h1*i1-2*x1-2*y1*h1)*fx = c1-y1*y1-x1*x1-i1*i1+2*y1*i1;
         //         (h1*h1+1)fx*fx + (2*h1*i1-2*x1-2*y1*h1)*fx -c1+y1*y1+x1*x1+i1*i1-2*y1*i1 = 0;
 
-        double a = h1*h1+1;
-        double b = 2*h1*i1-2*x1-2*y1*h1;
-        double c = -c1+y1*y1+x1*x1+i1*i1-2*y1*i1;
-        //j1*fx*fx + k1*fx + k1 = 0;
-        double a0 = b*b-4*a*c;
-        double aaa = Math.sqrt(b*b-4*a*c);
-        double bbb = -b+aaa;
-        double ccc = bbb/(2*a);
-        double fx =(-b+Math.sqrt(b*b-4*a*c))/(2*a);
+        double a = K*K+1;
+        double b = 2*K*B-2*x1-2*y1*K;
+        double c = -nLen*nLen+y1*y1+x1*x1+B*B-2*y1*B;
+        double x =(-b+Math.sqrt(b*b-4*a*c))/(2*a);
 
         float fBig;
         float fSmall;
@@ -290,23 +303,54 @@ public class Drawl extends View {
             fBig = x1;
             fSmall = x2;
         }
-        if( fx<=fSmall || fx>=fBig ){
-            fx =(-b-Math.sqrt(b*b-4*a*c))/2*a;
+        if( x<=fSmall || x>=fBig ){
+            x =(-b-Math.sqrt(b*b-4*a*c))/2*a;
         }
 
-        double fy = h1*fx+i1;
+        pt.x = (float)x;
+        pt.y = (float)(K*x+B);
 
-        pt.x = (float)fx;
-        pt.y = (float)fy;
         return pt;
     }
 
-    private void GetTrianglePoint(float x1, float y1, int nLen, float x2, float y2, int nVerticalLineLen, PointF pt1, PointF pt2)
+    private void GetTrianglePoint(float x1, float y1, float x2, float y2, int nLen, int nVerticalLineLen, PointF pt1, PointF pt2)
     {
-        pt1.x = 1;
-        pt1.y = 2;
-        pt2.x = 3;
-        pt2.y = 4;
+        PointF ptNear = GetCircleLineCrosspoint(x1, y1, x2, y2, nLen);
+        if( x1==x2 ){
+            pt1.x = ptNear.x-nVerticalLineLen;
+            pt1.y = ptNear.y;
+            pt2.x = ptNear.x+nVerticalLineLen;
+            pt2.y = ptNear.y;
+            return;
+        }
+
+        if( y1==y2 ){
+            pt1.x = ptNear.x;
+            pt1.y = ptNear.y-nVerticalLineLen;
+            pt2.x = ptNear.x;
+            pt2.y = ptNear.y+nVerticalLineLen;
+            return;
+        }
+
+        //负倒数
+        double K = (x1 - x2) / (y2 - y1);
+        // y = K*x+B
+        // B = -K*x+y
+
+        double B = -K * ptNear.x + ptNear.y;
+
+        x1 = ptNear.x;
+        y1 = ptNear.y;
+
+        double a = K*K+1;
+        double b = 2*K*B-2*x1-2*y1*K;
+        double c = -nVerticalLineLen*nVerticalLineLen+y1*y1+x1*x1+B*B-2*y1*B;
+
+        pt1.x = (float)((-b+Math.sqrt(b*b-4*a*c))/(2*a));
+        pt1.y = (float) (K*pt1.x+B);
+
+        pt2.x = (float)((-b-Math.sqrt(b*b-4*a*c))/(2*a));
+        pt2.y = (float) (K*pt2.x+B);
     }
 
     //读取配置文件
