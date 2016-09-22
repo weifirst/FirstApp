@@ -29,9 +29,11 @@ public class Drawl extends View {
     private Bitmap bitmap;// 位图
     private int m_nRadius = 60;
     private PointF m_ptFirst = new PointF(0,0);
+
     PointF m_nPos[][] = {{new PointF(0,0), new PointF(0,0), new PointF(0,0)},
                          {new PointF(0,0), new PointF(0,0), new PointF(0,0)},
                          {new PointF(0,0), new PointF(0,0), new PointF(0,0)}};
+
     ArrayList<PointF> m_ptList = new ArrayList<>();
 
 
