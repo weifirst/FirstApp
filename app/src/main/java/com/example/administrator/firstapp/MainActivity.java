@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private long exitTime = 0;
-    private long aaa = 1;//test git
+    private long aaa = 2;//test git
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
