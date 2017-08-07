@@ -1,6 +1,7 @@
 package com.example.administrator.firstapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -28,6 +29,10 @@ public class Drawl extends View {
     private Canvas canvas;// 画布
     private Bitmap bitmap;// 位图
     private int m_nRadius = 60;
+    /**
+     * 用户绘图的回调
+     */
+    private GestureCallBack callBack;
     private PointF m_ptFirst = new PointF(0,0);
 
     PointF m_nPos[][] = {{new PointF(0,0), new PointF(0,0), new PointF(0,0)},
@@ -37,13 +42,14 @@ public class Drawl extends View {
     ArrayList<PointF> m_ptList = new ArrayList<>();
 
 
-    public Drawl(Context context) {
+    public Drawl(Context context, String passWord,GestureCallBack callBack) {
         super(context);
 
         paint = new Paint(Paint.DITHER_FLAG);// 创建一个画笔
         bitmap = Bitmap.createBitmap(CScreenSize.GetWidth(), CScreenSize.GetWidth(), Bitmap.Config.ARGB_8888); // 设置位图的宽高
         canvas = new Canvas();
         canvas.setBitmap(bitmap);
+        this.callBack = callBack;
 
         paint.setStyle(Paint.Style.STROKE);// 设置非填充
         paint.setStrokeWidth(2);// 笔宽5像素
@@ -96,6 +102,8 @@ public class Drawl extends View {
                     m_ptList.add( m_ptFirst );
                 }
 
+
+
  /*               // 判断当前点击的位置是处于哪个点之内
                 currentPoint = getPointAt(mov_x, mov_y);
                 if (currentPoint != null) {
@@ -120,6 +128,7 @@ public class Drawl extends View {
                     DrawDotAndLine(event.getX(), event.getY());
                 }
                 invalidate();
+
          /*       clearScreenAndDrawList();
 
                 // 得到当前移动位置是处于哪个点内
@@ -171,6 +180,13 @@ public class Drawl extends View {
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
                 DrawNineCircle();
                 invalidate();
+                int a = m_ptList.size();
+                if( a==5 ){
+                    callBack.checkedSuccess();
+
+
+                    a = 9;
+                }
                     /*     // 清掉屏幕上所有的线，只画上集合里面保存的线
                 if(passWord.equals(passWordSb.toString())){
                     //代表用户绘制的密码手势与传入的密码相同
@@ -387,6 +403,18 @@ public class Drawl extends View {
                 canvas.drawCircle(x, y, m_nRadius, p);
             }
         }
+    }
+
+    public interface GestureCallBack{
+
+        /**
+         * 代表用户绘制的密码与传入的密码相同
+         */
+        public abstract void checkedSuccess();
+        /**
+         * 代表用户绘制的密码与传入的密码不相同
+         */
+        public abstract void checkedFail();
     }
     //写数据
    /* public void writeFile(String fileName,String writestr) throws IOException{

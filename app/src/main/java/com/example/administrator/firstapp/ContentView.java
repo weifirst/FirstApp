@@ -14,7 +14,7 @@ public class ContentView  extends ViewGroup {
    // private int[] nScreenSize;
     private Drawl drawl;
     Context m_context;
-    public ContentView(Context context/*, String passWord, GestureCallBack callBack*/) {
+    public ContentView(Context context, String passWord, Drawl.GestureCallBack callBack) {
         super(context);
 
        // nScreenSize = CScreenSize.getScreenSize(context);
@@ -27,7 +27,7 @@ public class ContentView  extends ViewGroup {
         // 初始化一个可以画线的view
         drawl = new Drawl(context, list,passWord,callBack);*/
         m_context = context;
-        drawl = new Drawl(context);
+        drawl = new Drawl(context,passWord,callBack);
     }
 
     @Override
