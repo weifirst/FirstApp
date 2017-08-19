@@ -36,7 +36,7 @@ import java.util.TimerTask;
 import static com.example.administrator.firstapp.Main3Activity.transparencyBar;
 import static java.security.AccessController.getContext;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends SuperActivity/*AppCompatActivity*/ {
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -229,9 +229,13 @@ public class MainActivity extends AppCompatActivity {
             if((System.currentTimeMillis()-exitTime) > 2000){
                 Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
-            } else {
-                finish();
-                System.exit(0);
+            }
+            else{
+                Intent intent = new Intent();
+                intent.setAction(SuperActivity.SYSTEM_EXIT);
+                sendBroadcast(intent);
+             /*   finish();
+                System.exit(0);*/
             }
             return true;
         }

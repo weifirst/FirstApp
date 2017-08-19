@@ -2,6 +2,7 @@ package com.example.administrator.firstapp;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ import java.lang.reflect.Method;
 
 
 
-public class Main3Activity extends AppCompatActivity {
+public class Main3Activity extends SuperActivity/*AppCompatActivity*/ {
     /** * 修改状态栏为全透明 * @param activity */
     @TargetApi(19)
     public static void transparencyBar(Activity activity){
@@ -90,11 +91,16 @@ public class Main3Activity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
             if((System.currentTimeMillis()-exitTime) > 2000){
-                Toast.makeText(getApplicationContext(), "再按一次退出程序！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "再按一次退出程序xxxxx！", Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
-            } else {
-                finish();
-                System.exit(0);
+            }
+            else{
+                Intent intent = new Intent();
+                intent.setAction(SuperActivity.SYSTEM_EXIT);
+                sendBroadcast(intent);
+              /*  finish();
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);*/
             }
             return true;
         }
