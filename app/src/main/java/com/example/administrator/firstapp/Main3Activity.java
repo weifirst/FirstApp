@@ -65,7 +65,6 @@ public class Main3Activity extends SuperActivity/*AppCompatActivity*/ {
 
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        //tintManager.setStatusBarTintResource(R.color.title_green);
         tintManager.setStatusBarTintResource(R.drawable.sky2);
         Class clazz = this.getWindow().getClass();
         try {
@@ -91,16 +90,13 @@ public class Main3Activity extends SuperActivity/*AppCompatActivity*/ {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
             if((System.currentTimeMillis()-exitTime) > 2000){
-                Toast.makeText(getApplicationContext(), "再按一次退出程序xxxxx！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "再按一次退出程序！", Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
             }
             else{
                 Intent intent = new Intent();
                 intent.setAction(SuperActivity.SYSTEM_EXIT);
                 sendBroadcast(intent);
-              /*  finish();
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);*/
             }
             return true;
         }
