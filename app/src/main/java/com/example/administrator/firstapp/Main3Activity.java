@@ -32,15 +32,18 @@ public class Main3Activity   extends SuperActivity /*AppCompatActivity*/ {
     public void Click(View v)
     {
         switch (v.getId()){
-            case R.id.button:
+            case R.id.btnAdd:
             {
-                Intent intent = new Intent(Main3Activity.this,Main2Activity.class);
+                Intent intent = new Intent(Main3Activity.this,Main21Activity.class);
                 startActivity(intent);
                 return;
-
-
             }
-
+            case R.id.btnList:
+            {
+                Intent intent2 = new Intent(Main3Activity.this,Main2Activity.class);
+                startActivity(intent2);
+                return;
+            }
         }
     }
     @TargetApi(19)

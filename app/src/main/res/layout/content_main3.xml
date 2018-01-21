@@ -40,13 +40,24 @@
 
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnAdd"
         android:onClick="Click"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editText2"
-        android:text="登录"
+        android:text="添加"
         tools:layout_editor_absoluteX="125dp"
+        tools:layout_editor_absoluteY="16dp"
+        />
+    <Button
+        android:id="@+id/btnList"
+        android:onClick="Click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText2"
+        android:text="列表"
+        android:layout_toRightOf="@id/btnAdd"
+        tools:layout_editor_absoluteX="225dp"
         tools:layout_editor_absoluteY="16dp"
         />
 
