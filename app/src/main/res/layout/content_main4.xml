@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.administrator.firstapp.Main3Activity"
+    tools:context="com.example.administrator.firstapp.Main4Activity"
     tools:showIn="@layout/activity_main">
 
     <TextView
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textSize="100px"
-        android:text="欢迎进入登录界面ryr"
+        android:text="列表界面"
         android:id="@+id/textView" />
     <TextView
         android:layout_width="wrap_content"

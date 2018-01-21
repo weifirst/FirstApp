@@ -2,7 +2,6 @@ package com.example.administrator.firstapp;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,10 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,27 +20,48 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 
-
-
-public class Main3Activity   extends SuperActivity /*AppCompatActivity*/ {
+public class Main4Activity extends SuperActivity /*AppCompatActivity*/ {
     /** * 修改状态栏为全透明 * @param activity */
     public void Click(View v)
     {
-        switch (v.getId()){
+        switch (v.getId())
+        {
             case R.id.button:
             {
-                Intent intent = new Intent(Main3Activity.this,Main2Activity.class);
-                startActivity(intent);
-                return;
+                SQLiteDatabase db = openOrCreateDatabase("test.db", Context.MODE_PRIVATE, null);
+                //创建person表
+                db.execSQL("CREATE TABLE IF NOT EXISTS person (_id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR, age SMALLINT)");
 
+                String msg="";
+                Cursor c = db.rawQuery("SELECT * FROM person WHERE age >= ?", new String[]{"10"});
+                while (c.moveToNext()) {
+                    int _id = c.getInt(c.getColumnIndex("_id"));
+                    String name = c.getString(c.getColumnIndex("name"));
+                    int age = c.getInt(c.getColumnIndex("age"));
+                    Log.i("db", "_id=>" + _id + ", name=>" + name + ", age=>" + age);
+                    msg += name;
+                    msg += age;
+                }
+                c.close();
+                if( msg.isEmpty() ){
+                    db.execSQL("INSERT INTO person VALUES (NULL, ?, ?)", new Object[]{"李明", 28});
+                }
+
+                Toast.makeText(Main4Activity.this,msg,Toast.LENGTH_LONG).show();
+
+                //关闭当前数据库
+                db.close();
 
             }
+
+                break;
 
         }
     }
     @TargetApi(19)
     public static void transparencyBar(Activity activity){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        return;
+      /*  if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = activity.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -55,12 +71,13 @@ public class Main3Activity   extends SuperActivity /*AppCompatActivity*/ {
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window window =activity.getWindow();
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
+        }*/
     }
 
     @TargetApi(19)
     private void setTranslucentStatus(boolean on) {
-        Window win = getWindow();
+        return;
+      /*  Window win = getWindow();
         WindowManager.LayoutParams winParams = win.getAttributes();
         final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
         if (on) {
@@ -69,15 +86,16 @@ public class Main3Activity   extends SuperActivity /*AppCompatActivity*/ {
         else{
             winParams.flags &= ~bits;        //&是位运算里面，与运算  a&=b相当于 a = a&b  ~非运算符
         }
-        win.setAttributes(winParams);
+        win.setAttributes(winParams);*/
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main3);
+        setContentView(R.layout.activity_main4);
+        return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {            //系统版本大于19
+       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {            //系统版本大于19
             setTranslucentStatus(true);
         }
         transparencyBar(this);
@@ -100,7 +118,7 @@ public class Main3Activity   extends SuperActivity /*AppCompatActivity*/ {
              }
         }
         catch (Exception e){
-        }
+        }*/
 
     }
 

@@ -2,11 +2,13 @@ package com.example.administrator.firstapp;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +48,7 @@ public class MainActivity extends SuperActivity/*AppCompatActivity*/ {
 
     private FrameLayout body_layout;
     private ContentView content;
+    private static final int VIBRATE_DURATION = 15;
 
     @TargetApi(19)
     public static void transparencyBar(Activity activity){
@@ -101,7 +104,9 @@ public class MainActivity extends SuperActivity/*AppCompatActivity*/ {
 
             @Override
             public void checkedFail() {
-                Toast.makeText(MainActivity.this,"校验失败", Toast.LENGTH_SHORT).show();
+                Vibrator vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+                vibrator.vibrate(500);
+                //Toast.makeText(MainActivity.this,"校验失败", Toast.LENGTH_SHORT).show();
             }
         });
 

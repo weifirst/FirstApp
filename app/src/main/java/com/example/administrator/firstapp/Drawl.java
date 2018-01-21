@@ -183,9 +183,9 @@ public class Drawl extends View {
                 int a = m_ptList.size();
                 if( a==5 ){
                     callBack.checkedSuccess();
-
-
-                    a = 9;
+                }
+                else{
+                    callBack.checkedFail();
                 }
                     /*     // 清掉屏幕上所有的线，只画上集合里面保存的线
                 if(passWord.equals(passWordSb.toString())){
