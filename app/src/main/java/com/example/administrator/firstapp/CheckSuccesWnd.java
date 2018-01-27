@@ -27,20 +27,20 @@ import java.lang.reflect.Method;
 
 
 
-public class Main3Activity   extends SuperActivity /*AppCompatActivity*/ {
+public class CheckSuccesWnd   extends SuperActivity /*AppCompatActivity*/ {
     /** * 修改状态栏为全透明 * @param activity */
     public void Click(View v)
     {
         switch (v.getId()){
             case R.id.btnAdd:
             {
-                Intent intent = new Intent(Main3Activity.this,Main21Activity.class);
+                Intent intent = new Intent(CheckSuccesWnd.this,AddRecordWnd.class);
                 startActivity(intent);
                 return;
             }
             case R.id.btnList:
             {
-                Intent intent2 = new Intent(Main3Activity.this,Main2Activity.class);
+                Intent intent2 = new Intent(CheckSuccesWnd.this,ListWnd.class);
                 startActivity(intent2);
                 return;
             }

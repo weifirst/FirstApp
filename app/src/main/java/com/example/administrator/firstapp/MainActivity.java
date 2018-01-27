@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.example.administrator.firstapp.Main3Activity.transparencyBar;
+import static com.example.administrator.firstapp.CheckSuccesWnd.transparencyBar;
 import static java.security.AccessController.getContext;
 
 public class MainActivity extends SuperActivity/*AppCompatActivity*/ {
@@ -98,7 +98,7 @@ public class MainActivity extends SuperActivity/*AppCompatActivity*/ {
             @Override
             public void checkedSuccess() {
                 Toast.makeText(MainActivity.this,"校验成功", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this,Main3Activity.class);
+                Intent intent = new Intent(MainActivity.this,CheckSuccesWnd.class);
                 startActivity(intent);
             }
 
