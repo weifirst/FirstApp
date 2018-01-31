@@ -10,6 +10,7 @@ import android.support.v4.util.ArrayMap;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -60,10 +61,20 @@ public class ListWnd extends Activity implements AdapterView.OnItemClickListener
 //        String text = (String) ((TextView)view.findViewById(R.id.text)).getText();
         //大多数情况下，position和id相同，并且都从0开始
   //      String showText = "点击第" + position + "项，文本内容为：" + text + "，ID为：" + id;
+
+
         Long iid = new Long(id);
         String showText = "ID为"+id+"  数据库ID为"+mymap.get(iid);
         Toast.makeText(this, showText, Toast.LENGTH_LONG).show();
-      //  ListView.
-    }
 
+        SQLiteDatabase db = openOrCreateDatabase("p2p.db", Context.MODE_PRIVATE, null);
+        String sSql="";
+        String.format(sSql, "DELETE FROM Invest WHERE _id=?", new Object[]{mymap.get(iid)});
+        db.execSQL(sSql);
+
+        ListView listView = (ListView) parent;
+        ListAdapter listAdapter = listView.getAdapter();
+        ArrayAdapter arrayAdapter = (ArrayAdapter)listAdapter;
+        arrayAdapter.remove( arrayAdapter.getItem(position) );
+    }
 }
