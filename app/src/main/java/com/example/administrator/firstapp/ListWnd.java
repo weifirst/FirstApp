@@ -24,7 +24,6 @@ import java.util.Map;
 public class ListWnd extends Activity implements AdapterView.OnItemClickListener{
     private ListView listView;
     Map<Long,Integer> mymap = new ArrayMap<>();
-    private static Boolean bFlag = false;
     private long lWillDelID;
     private int nPosition;
 
@@ -70,14 +69,13 @@ public class ListWnd extends Activity implements AdapterView.OnItemClickListener
 
         lWillDelID = id;
         nPosition = position;
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(ListWnd.this)
             .setIcon(R.drawable.twodog)
             .setTitle("确认")
             .setMessage("确认要删除这条数据吗？")
             .setPositiveButton("确定",new DialogInterface.OnClickListener(){
                 @Override
                 public void onClick(DialogInterface dialog, int which){
-                    bFlag = true;
                     DelRecord(lWillDelID,nPosition);
                     finish();
                 }
@@ -85,30 +83,10 @@ public class ListWnd extends Activity implements AdapterView.OnItemClickListener
             .setNegativeButton("取消",new DialogInterface.OnClickListener(){
                 @Override
                 public void onClick(DialogInterface dialog, int which){
-                    finish();
+                   // finish();
                 }
             })
             .show();
-
-        if( bFlag ) {
-            /*Long iid = new Long(id);
-            String showText = "ID为" + id + "  数据库ID为" + mymap.get(iid);
-            Toast.makeText(this, showText, Toast.LENGTH_LONG).show();
-
-            SQLiteDatabase db = openOrCreateDatabase("p2p.db", Context.MODE_PRIVATE, null);
-            String sSql = "DELETE FROM Invest WHERE _id=" + mymap.get(iid);
-            // String.format(sSql, "DELETE FROM Invest WHERE _id=?", new Object[]{mymap.get(iid)});
-            db.execSQL(sSql);
-            db.close();
-
-            ListView listView = (ListView) parent;
-            ListAdapter listAdapter = listView.getAdapter();
-            ArrayAdapter arrayAdapter = (ArrayAdapter) listAdapter;
-            arrayAdapter.remove(arrayAdapter.getItem(position));*/
-        }
-        else{
-            bFlag = false;
-        }
     }
 
     void DelRecord(long id, int nPosition)
