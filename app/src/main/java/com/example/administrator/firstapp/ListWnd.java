@@ -24,6 +24,9 @@ import java.util.Map;
 public class ListWnd extends Activity implements AdapterView.OnItemClickListener{
     private ListView listView;
     Map<Long,Integer> mymap = new ArrayMap<>();
+    private static Boolean bFlag = false;
+    private long lWillDelID;
+    private int nPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,36 +68,64 @@ public class ListWnd extends Activity implements AdapterView.OnItemClickListener
         //大多数情况下，position和id相同，并且都从0开始
   //      String showText = "点击第" + position + "项，文本内容为：" + text + "，ID为：" + id;
 
-
-        new AlertDialog.Builder(this).setTitle("系统提示")
-            .setMessage("请确认所有数据都保存后再推出系统！")
+        lWillDelID = id;
+        nPosition = position;
+        new AlertDialog.Builder(this)
+            .setIcon(R.drawable.twodog)
+            .setTitle("确认")
+            .setMessage("确认要删除这条数据吗？")
             .setPositiveButton("确定",new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which){
+                    bFlag = true;
+                    DelRecord(lWillDelID,nPosition);
+                    finish();
+                }
+            })
+            .setNegativeButton("取消",new DialogInterface.OnClickListener(){
                 @Override
                 public void onClick(DialogInterface dialog, int which){
                     finish();
                 }
             })
-            .setNegativeButton("返回",new DialogInterface.OnClickListener(){
-                @Override
-                public void onClick(DialogInterface dialog, int which){
-                    Log.i("alertdialog"," 请保存数据！");
-                }
-            })
             .show();
 
+        if( bFlag ) {
+            /*Long iid = new Long(id);
+            String showText = "ID为" + id + "  数据库ID为" + mymap.get(iid);
+            Toast.makeText(this, showText, Toast.LENGTH_LONG).show();
+
+            SQLiteDatabase db = openOrCreateDatabase("p2p.db", Context.MODE_PRIVATE, null);
+            String sSql = "DELETE FROM Invest WHERE _id=" + mymap.get(iid);
+            // String.format(sSql, "DELETE FROM Invest WHERE _id=?", new Object[]{mymap.get(iid)});
+            db.execSQL(sSql);
+            db.close();
+
+            ListView listView = (ListView) parent;
+            ListAdapter listAdapter = listView.getAdapter();
+            ArrayAdapter arrayAdapter = (ArrayAdapter) listAdapter;
+            arrayAdapter.remove(arrayAdapter.getItem(position));*/
+        }
+        else{
+            bFlag = false;
+        }
+    }
+
+    void DelRecord(long id, int nPosition)
+    {
         Long iid = new Long(id);
-        String showText = "ID为"+id+"  数据库ID为"+mymap.get(iid);
+        String showText = "ID为" + id + "  数据库ID为" + mymap.get(iid);
         Toast.makeText(this, showText, Toast.LENGTH_LONG).show();
 
         SQLiteDatabase db = openOrCreateDatabase("p2p.db", Context.MODE_PRIVATE, null);
-        String sSql="DELETE FROM Invest WHERE _id="+mymap.get(iid);
-       // String.format(sSql, "DELETE FROM Invest WHERE _id=?", new Object[]{mymap.get(iid)});
+        String sSql = "DELETE FROM Invest WHERE _id=" + mymap.get(iid);
+        // String.format(sSql, "DELETE FROM Invest WHERE _id=?", new Object[]{mymap.get(iid)});
         db.execSQL(sSql);
         db.close();
 
-        ListView listView = (ListView) parent;
+       // ListView listView = (ListView) parent;
         ListAdapter listAdapter = listView.getAdapter();
-        ArrayAdapter arrayAdapter = (ArrayAdapter)listAdapter;
-        arrayAdapter.remove( arrayAdapter.getItem(position) );
+        ArrayAdapter arrayAdapter = (ArrayAdapter) listAdapter;
+        arrayAdapter.remove(arrayAdapter.getItem(nPosition));
     }
 }
