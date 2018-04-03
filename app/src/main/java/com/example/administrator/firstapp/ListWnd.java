@@ -2,11 +2,14 @@ package com.example.administrator.firstapp;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -63,14 +66,31 @@ public class ListWnd extends Activity implements AdapterView.OnItemClickListener
   //      String showText = "点击第" + position + "项，文本内容为：" + text + "，ID为：" + id;
 
 
+        new AlertDialog.Builder(this).setTitle("系统提示")
+            .setMessage("请确认所有数据都保存后再推出系统！")
+            .setPositiveButton("确定",new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which){
+                    finish();
+                }
+            })
+            .setNegativeButton("返回",new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which){
+                    Log.i("alertdialog"," 请保存数据！");
+                }
+            })
+            .show();
+
         Long iid = new Long(id);
         String showText = "ID为"+id+"  数据库ID为"+mymap.get(iid);
         Toast.makeText(this, showText, Toast.LENGTH_LONG).show();
 
         SQLiteDatabase db = openOrCreateDatabase("p2p.db", Context.MODE_PRIVATE, null);
-        String sSql="";
-        String.format(sSql, "DELETE FROM Invest WHERE _id=?", new Object[]{mymap.get(iid)});
+        String sSql="DELETE FROM Invest WHERE _id="+mymap.get(iid);
+       // String.format(sSql, "DELETE FROM Invest WHERE _id=?", new Object[]{mymap.get(iid)});
         db.execSQL(sSql);
+        db.close();
 
         ListView listView = (ListView) parent;
         ListAdapter listAdapter = listView.getAdapter();
