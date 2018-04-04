@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ListWnd extends Activity implements AdapterView.OnItemClickListener{
+public class ListWnd extends Activity implements AdapterView.OnItemLongClickListener/*.OnItemClickListener*/{
     private ListView listView;
     Map<Long,Integer> mymap = new ArrayMap<>();
     private long lWillDelID;
@@ -33,7 +33,8 @@ public class ListWnd extends Activity implements AdapterView.OnItemClickListener
 
         listView = new ListView(this);
         listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,getData()));
-        listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
+        //listView.setOnItemClickListener(this);
         setContentView(listView);
     }
 
@@ -61,7 +62,8 @@ public class ListWnd extends Activity implements AdapterView.OnItemClickListener
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
+    //public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //通过view获取其内部的组件，进而进行操作
 //        String text = (String) ((TextView)view.findViewById(R.id.text)).getText();
         //大多数情况下，position和id相同，并且都从0开始
@@ -77,7 +79,7 @@ public class ListWnd extends Activity implements AdapterView.OnItemClickListener
                 @Override
                 public void onClick(DialogInterface dialog, int which){
                     DelRecord(lWillDelID,nPosition);
-                    finish();
+                    dialog.dismiss();
                 }
             })
             .setNegativeButton("取消",new DialogInterface.OnClickListener(){
@@ -87,6 +89,7 @@ public class ListWnd extends Activity implements AdapterView.OnItemClickListener
                 }
             })
             .show();
+        return true;
     }
 
     void DelRecord(long id, int nPosition)

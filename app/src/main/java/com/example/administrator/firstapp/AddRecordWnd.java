@@ -59,9 +59,9 @@ public class AddRecordWnd extends AppCompatActivity {
 
                 //关闭当前数据库
                 db.close();
+
+                finish();
                 return;
-
-
             }
 
         }
