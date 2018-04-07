@@ -13,52 +13,24 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="100px"
-        android:text="欢迎进入登录界面ryr"
-        android:id="@+id/textView" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
-        android:layout_alignBottom="@+id/editText2"
-        android:textSize="70px"
-        android:text="用户名："
-        android:id="@+id/textView2" />
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
-        android:layout_toRightOf="@+id/textView2"
-        android:ems="10"
-        android:inputType="none"
-        android:text="Name" />
-
-
-
-    <Button
         android:id="@+id/btnAdd"
         android:onClick="Click"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText2"
         android:text="添加"
-        tools:layout_editor_absoluteX="125dp"
-        tools:layout_editor_absoluteY="16dp"
+        android:padding="15dip"
+        android:textSize = "100px"
+        android:textColor="@android:color/white"
         />
-    <Button
-        android:id="@+id/btnList"
+    <TextView
+        android:id="@+id/textList"
         android:onClick="Click"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText2"
         android:text="列表"
+        android:padding="15dip"
+        android:textSize = "100px"
         android:layout_toRightOf="@id/btnAdd"
-        tools:layout_editor_absoluteX="225dp"
-        tools:layout_editor_absoluteY="16dp"
+        android:textColor="@android:color/white"
         />
-
 </RelativeLayout>
