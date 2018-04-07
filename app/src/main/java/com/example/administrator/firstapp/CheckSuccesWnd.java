@@ -38,7 +38,7 @@ public class CheckSuccesWnd   extends SuperActivity /*AppCompatActivity*/ {
                 startActivity(intent);
                 return;
             }
-            case R.id.btnList:
+            case R.id.textList:
             {
                 Intent intent2 = new Intent(CheckSuccesWnd.this,ListWnd.class);
                 startActivity(intent2);
