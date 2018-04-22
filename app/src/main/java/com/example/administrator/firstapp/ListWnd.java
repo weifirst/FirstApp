@@ -7,14 +7,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,18 +35,42 @@ public class ListWnd extends Activity implements AdapterView.OnItemLongClickList
     private long lWillDelID;
     private int nPosition;
 
+    List<String> data = new ArrayList<String>();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SQLiteDatabase db = openOrCreateDatabase("p2p.db", Context.MODE_PRIVATE, null);
+        Cursor c = db.rawQuery("SELECT * FROM Invest",null);
+        Long i=new Long(0);
+        while (c.moveToNext()) {
+            Integer id = c.getInt(c.getColumnIndex("_id"));
+            String riqi = c.getString(c.getColumnIndex("DaoqiDate"));
+            int nJinE = c.getInt(c.getColumnIndex("JinE"));
+            String PingtaiName = c.getString(c.getColumnIndex("PingTaiName"));
+            String msg=String.format( "%s % 5d %s", riqi,nJinE,PingtaiName);
+            data.add(msg);
+            mymap.put(i,id);
+            i++;
+        }
+        c.close();
+        //关闭当前数据库
+        db.close();
+
         listView = new ListView(this);
-        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,getData()));
+        String[] strings = {"a","b","c"};
+
+        final MyAdapter adapter=new MyAdapter(getApplicationContext(),strings);
+        listView.setAdapter(adapter);
+        //listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,getData()));
         listView.setOnItemLongClickListener(this);
-        //listView.setOnItemClickListener(this);
         setContentView(listView);
     }
 
-    private List<String> getData(){
+   /* private List<String> getData(){
         List<String> data = new ArrayList<String>();
 
         SQLiteDatabase db = openOrCreateDatabase("p2p.db", Context.MODE_PRIVATE, null);
@@ -59,7 +91,7 @@ public class ListWnd extends Activity implements AdapterView.OnItemLongClickList
         db.close();
 
         return data;
-    }
+    }*/
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
@@ -108,5 +140,49 @@ public class ListWnd extends Activity implements AdapterView.OnItemLongClickList
         ListAdapter listAdapter = listView.getAdapter();
         ArrayAdapter arrayAdapter = (ArrayAdapter) listAdapter;
         arrayAdapter.remove(arrayAdapter.getItem(nPosition));
+    }
+
+    class MyAdapter extends BaseAdapter {
+        private String[] data;
+        private Context mContext;
+        public MyAdapter(Context mContext, String[] data) {
+            super();
+            this.mContext = mContext;
+            this.data = data;
+        }
+
+        @Override
+        public int getCount() {
+            return data.length;
+        }
+
+        @Override public Object getItem(int position) {
+            return null;
+        }
+
+        @Override public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            View view = inflater.inflate(R.layout.list_item,null);
+            final TextView textView = (TextView) view.findViewById(R.id.textView);
+            Button button = (Button) view.findViewById(R.id.button);
+            ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+            imageView.setImageResource(R.mipmap.ic_launcher);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    textView.append("!");
+                }
+            });
+            textView.setText(data[position]);
+            return view;
+
+           /* TextView textView = new TextView(mContext);
+            textView.setText(data[position]);
+            return textView;*/
+        }
     }
 }
