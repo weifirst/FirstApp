@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,10 +68,20 @@ public class ListWnd extends Activity implements AdapterView.OnItemLongClickList
         listView.setAdapter(adapter);
         //listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,getData()));
         listView.setOnItemLongClickListener(this);
+        adapter.setOnItemDeleteClickListener(new MyAdapter.onItemDeleteListener() {
+            @Override
+            public void onDeleteClick(int i) {
+               /* View v = listView.getChildAt(i);
+                TextView textView = (TextView)v.findViewById(R.id.textView);
+                textView.append("!");*/
+                adapter.notifyDataSetChanged();
+            }
+        });
+
         setContentView(listView);
     }
 
-   /* private List<String> getData(){
+    private List<String> getData(){
         List<String> data = new ArrayList<String>();
 
         SQLiteDatabase db = openOrCreateDatabase("p2p.db", Context.MODE_PRIVATE, null);
@@ -91,7 +102,7 @@ public class ListWnd extends Activity implements AdapterView.OnItemLongClickList
         db.close();
 
         return data;
-    }*/
+    }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
@@ -140,49 +151,5 @@ public class ListWnd extends Activity implements AdapterView.OnItemLongClickList
         ListAdapter listAdapter = listView.getAdapter();
         ArrayAdapter arrayAdapter = (ArrayAdapter) listAdapter;
         arrayAdapter.remove(arrayAdapter.getItem(nPosition));
-    }
-
-    class MyAdapter extends BaseAdapter {
-        private String[] data;
-        private Context mContext;
-        public MyAdapter(Context mContext, String[] data) {
-            super();
-            this.mContext = mContext;
-            this.data = data;
-        }
-
-        @Override
-        public int getCount() {
-            return data.length;
-        }
-
-        @Override public Object getItem(int position) {
-            return null;
-        }
-
-        @Override public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = LayoutInflater.from(mContext);
-            View view = inflater.inflate(R.layout.list_item,null);
-            final TextView textView = (TextView) view.findViewById(R.id.textView);
-            Button button = (Button) view.findViewById(R.id.button);
-            ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-            imageView.setImageResource(R.mipmap.ic_launcher);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    textView.append("!");
-                }
-            });
-            textView.setText(data[position]);
-            return view;
-
-           /* TextView textView = new TextView(mContext);
-            textView.setText(data[position]);
-            return textView;*/
-        }
     }
 }
