@@ -32,75 +32,56 @@ import java.util.List;
 import java.util.Map;
 
 public class MyAdapter extends BaseAdapter {
-        //private String[] data;
-        private List<String> m_Data;
-        private Context mContext;
-        /*public MyAdapter(Context mContext, String[] data) {
-            super();
-            this.mContext = mContext;
-            this.data = data;
-        }*/
-        public MyAdapter(Context mContext, List<String> data) {
-            super();
-            this.mContext = mContext;
-            this.m_Data = data;
-        }
+    private List<String> m_Data;
+    private Context mContext;
+    public MyAdapter(Context mContext, List<String> data) {
+        super();
+        this.mContext = mContext;
+        this.m_Data = data;
+    }
 
-        @Override
-        public int getCount() {
-            return m_Data.size();
-        }
+    @Override
+    public int getCount() {
+        return m_Data.size();
+    }
 
-        @Override public Object getItem(int position) {
-            return null;
-        }
+    @Override public Object getItem(int position) {
+        return null;
+    }
 
-        @Override public long getItemId(int position) {
-            return 0;
-        }
+    @Override public long getItemId(int position) {
+        return 0;
+    }
 
-        @Override
-        public View getView(final int i, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = LayoutInflater.from(mContext);
-            ViewHolder holder = null;
-            if( convertView==null ){
-                convertView = inflater.inflate(R.layout.list_item, null);
-                holder = new ViewHolder();
-                holder.button = (Button) convertView.findViewById(R.id.button);
-                holder.textView = (TextView) convertView.findViewById(R.id.textView);
-                holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
-                convertView.setTag(holder);
+    @Override
+    public View getView(final int i, View convertView, ViewGroup parent) {
+         LayoutInflater inflater = LayoutInflater.from(mContext);
+         ViewHolder holder = null;
+         if( convertView==null ){
+             convertView = inflater.inflate(R.layout.list_item, null);
+             holder = new ViewHolder();
+             holder.button = (Button) convertView.findViewById(R.id.button);
+             holder.textView = (TextView) convertView.findViewById(R.id.textView);
+             holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+             convertView.setTag(holder);
+         }
+         else{
+             holder = (ViewHolder)convertView.getTag();
+         }
+         holder.imageView.setImageResource(R.mipmap.ic_launcher);
+         holder.button.setOnClickListener(new View.OnClickListener(){
+             @Override public void onClick(View v){
+                 mOnItemDeleteListener.onDeleteClick(i);
+                 Log.d("click","button");
             }
-            else{
-                holder = (ViewHolder)convertView.getTag();
-            }
-            holder.imageView.setImageResource(R.mipmap.ic_launcher);
-            holder.button.setOnClickListener(new View.OnClickListener(){
-                @Override public void onClick(View v){
-                    mOnItemDeleteListener.onDeleteClick(i);
-                    Log.d("click","button");
-                }
-            });
-            String[] strArr = new String[m_Data.size()];
-            m_Data.toArray(strArr);
-            holder.textView.setText(strArr[i]);
+         });
 
-            return convertView;
+         String[] strArr = new String[m_Data.size()];
+         m_Data.toArray(strArr);
+         holder.textView.setText(strArr[i]);
 
-            /*LayoutInflater inflater = LayoutInflater.from(mContext);
-            View view = inflater.inflate(R.layout.list_item,null);
-            final TextView textView = (TextView) view.findViewById(R.id.textView);
-            Button button = (Button) view.findViewById(R.id.button);
-            ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-            imageView.setImageResource(R.mipmap.ic_launcher);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    textView.append("!");
-                }
-            });
-            textView.setText(data[position]);
-            return view;*/
-        }
+         return convertView;
+    }
 
     public interface onItemDeleteListener {
         void onDeleteClick(int i);
