@@ -32,17 +32,23 @@ import java.util.List;
 import java.util.Map;
 
 public class MyAdapter extends BaseAdapter {
-        private String[] data;
+        //private String[] data;
+        private List<String> m_Data;
         private Context mContext;
-        public MyAdapter(Context mContext, String[] data) {
+        /*public MyAdapter(Context mContext, String[] data) {
             super();
             this.mContext = mContext;
             this.data = data;
+        }*/
+        public MyAdapter(Context mContext, List<String> data) {
+            super();
+            this.mContext = mContext;
+            this.m_Data = data;
         }
 
         @Override
         public int getCount() {
-            return data.length;
+            return m_Data.size();
         }
 
         @Override public Object getItem(int position) {
@@ -75,7 +81,9 @@ public class MyAdapter extends BaseAdapter {
                     Log.d("click","button");
                 }
             });
-            holder.textView.setText(data[i]);
+            String[] strArr = new String[m_Data.size()];
+            m_Data.toArray(strArr);
+            holder.textView.setText(strArr[i]);
 
             return convertView;
 

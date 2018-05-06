@@ -62,9 +62,9 @@ public class ListWnd extends Activity implements AdapterView.OnItemLongClickList
         db.close();
 
         listView = new ListView(this);
-        String[] strings = {"a","b","c"};
+        //String[] strings = {"a","b","c"};
 
-        final MyAdapter adapter=new MyAdapter(getApplicationContext(),strings);
+        final MyAdapter adapter=new MyAdapter(getApplicationContext(),getData());
         listView.setAdapter(adapter);
         //listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,getData()));
         listView.setOnItemLongClickListener(this);
